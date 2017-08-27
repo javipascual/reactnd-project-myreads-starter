@@ -4,6 +4,12 @@ import BookShelf from './BookShelf'
 import './App.css'
 
 class BooksApp extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.onShelfChange = this.onShelfChange.bind(this);
+  }
+
   state = {
     /**
      * TODO: Instead of using this state variable to keep track of which page
@@ -19,6 +25,21 @@ class BooksApp extends React.Component {
     BooksAPI.getAll().then(books =>
       this.setState(() =>  ({ books: books.slice(0) }))
     );
+  }
+
+  onShelfChange(book, shelf) {
+    BooksAPI.update(book, shelf).then(books => {
+      this.setState((prevState) => ({
+        books : prevState.books.map(b => {
+          if (books.currentlyReading.includes(b.id))
+            return {...b, shelf: "currentlyReading"}
+          else if (books.wantToRead.includes(b.id))
+            return {...b, shelf: "wantToRead"}
+          else
+            return {...b, shelf: "read"}
+        })
+      }))
+    });
   }
 
   render() {
@@ -53,12 +74,15 @@ class BooksApp extends React.Component {
             <div className="list-books-content">
               {<BookShelf title={"Currently Reading"}
                           books={this.state.books.filter(b => b.shelf === "currentlyReading")}
+                          onShelfChange={this.onShelfChange}
               />}
               {<BookShelf title={"Want to Read"}
                           books={this.state.books.filter(b => b.shelf === "wantToRead")}
+                          onShelfChange={this.onShelfChange}
               />}
               {<BookShelf title={"Read"}
                           books={this.state.books.filter(b => b.shelf === "read")}
+                          onShelfChange={this.onShelfChange}
               />}
             </div>
             <div className="open-search">

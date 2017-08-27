@@ -13,6 +13,7 @@ class BookShelf extends React.Component {
                                                           title={book.title}
                                                           authors={book.authors}
                                                           coverUrl={book.imageLinks.smallThumbnail}
+                                                          onShelfChange={cat => this.props.onShelfChange(book, cat) }
                                                        />
                                            </li>)
         }
@@ -25,6 +26,7 @@ class BookShelf extends React.Component {
 BookShelf.propTypes = {
   title: PropTypes.string.isRequired,
   books: PropTypes.arrayOf(PropTypes.object).isRequired,
+  onShelfChange: PropTypes.func.isRequired,
 };
 
 export default BookShelf
