@@ -17,7 +17,7 @@ class Book extends React.Component {
       <div className="book-top">
         <div className="book-cover" style={{ width: 128, height: 192, backgroundImage: `url(${this.props.coverUrl}` }}></div>
           <div className="book-shelf-changer">
-            <select onChange={this.handleChange}>
+            <select value={this.props.shelf} onChange={this.handleChange}>
               <option value="none" disabled>Move to...</option>
               <option value="currentlyReading">Currently Reading</option>
               <option value="wantToRead">Want to Read</option>
@@ -36,6 +36,7 @@ Book.propTypes = {
   title: PropTypes.string.isRequired,
   authors: PropTypes.arrayOf(PropTypes.string).isRequired,
   coverUrl: PropTypes.string.isRequired,
+  shelf: PropTypes.string.isRequired,
   onShelfChange: PropTypes.func.isRequired,
 };
 
