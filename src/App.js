@@ -35,8 +35,10 @@ class BooksApp extends React.Component {
             return {...b, shelf: "currentlyReading"}
           else if (books.wantToRead.includes(b.id))
             return {...b, shelf: "wantToRead"}
-          else
+          else if (books.read.includes(b.id))
             return {...b, shelf: "read"}
+          else
+            return {...b, shelf: 'none'};
         })
       }))
     });
