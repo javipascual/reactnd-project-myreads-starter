@@ -1,6 +1,7 @@
 import React from 'react'
 import * as BooksAPI from './BooksAPI'
 import BookShelf from './BookShelf'
+import Book from './Book';
 import './App.css'
 
 class BooksApp extends React.Component {
@@ -8,6 +9,7 @@ class BooksApp extends React.Component {
   constructor(props) {
     super(props);
     this.onShelfChange = this.onShelfChange.bind(this);
+    this.onSearchChange = this.onSearchChange.bind(this);
   }
 
   state = {
@@ -19,6 +21,7 @@ class BooksApp extends React.Component {
      */
     showSearchPage: true,
     books: [],
+    searchBooks: [],
   }
   
   componentDidMount() {
@@ -44,6 +47,23 @@ class BooksApp extends React.Component {
     });
   }
 
+  onSearchChange(e) {
+    BooksAPI.search(e.target.value, 50).then(searchBooks => {
+      this.setState((prevState) => ({
+        searchBooks : searchBooks.map(b => {
+          // When a book is on a bookshelf, it should have the same state
+          // on both the main application page and the search page
+          const idx = prevState.books.indexOf(b.id);
+          if (idx >= 0)
+            return {...b, shelf: prevState.books[idx].shelf};
+          else
+            return {...b, shelf: 'none'};
+        })
+      }))
+    });
+    
+  }
+
   render() {
     return (
       <div className="app">
@@ -60,12 +80,24 @@ class BooksApp extends React.Component {
                   However, remember that the BooksAPI.search method DOES search by title or author. So, don't worry if
                   you don't find a specific author or title. Every search is limited by search terms.
                 */}
-                <input type="text" placeholder="Search by title or author"/>
+                <input type="text" placeholder="Search by title or author" onChange={this.onSearchChange}/>
                 
               </div>
             </div>
             <div className="search-books-results">
-              <ol className="books-grid"></ol>
+              <ol className="books-grid">
+              {this.state.searchBooks.map((book, i) => <li key={i}>
+                                <Book
+                                  title={book.title}
+                                  authors={book.authors}
+                                  coverUrl={book.imageLinks.smallThumbnail}
+                                  shelf={book.shelf}
+                                  onShelfChange={cat => this.onShelfChange(book, cat)}
+                                />
+                              </li>
+                )
+              }
+              </ol>
             </div>
           </div>
         ) : (
