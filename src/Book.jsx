@@ -27,14 +27,14 @@ class Book extends React.Component {
           </div>
         </div>
       <div className="book-title">{this.props.title}</div>
-      <div className="book-authors">{this.props.authors.join(', ')}</div>
+      <div className="book-authors">{this.props.authors && this.props.authors.join(', ')}</div>
     </div>
   }
 }
 
 Book.propTypes = {
   title: PropTypes.string.isRequired,
-  authors: PropTypes.arrayOf(PropTypes.string).isRequired,
+  authors: PropTypes.arrayOf(PropTypes.string),
   coverUrl: PropTypes.string.isRequired,
   shelf: PropTypes.string.isRequired,
   onShelfChange: PropTypes.func.isRequired,
