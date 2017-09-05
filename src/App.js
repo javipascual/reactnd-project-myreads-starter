@@ -47,11 +47,8 @@ class BooksApp extends React.Component {
         searchBooks : searchBooks.map(b => {
           // When a book is on a bookshelf, it should have the same state
           // on both the main application page and the search page
-          const idx = prevState.books.indexOf(b.id);
-          if (idx >= 0)
-            return {...b, shelf: prevState.books[idx].shelf};
-          else
-            return {...b, shelf: 'none'};
+          const book = prevState.books.find(book => book.id === b.id);
+          return {...b, shelf: book ? book.shelf : 'none'};
         })
       }))
     });
