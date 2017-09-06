@@ -35,6 +35,9 @@ class BooksApp extends React.Component {
 
   onSearchChange(e) {
     BooksAPI.search(e.target.value, 50).then(searchBooks => {
+
+      if (!searchBooks || searchBooks.error) return;
+
       this.setState((prevState) => ({
         searchBooks : searchBooks.map(b => {
           // When a book is on a bookshelf, it should have the same state
