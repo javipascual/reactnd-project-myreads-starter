@@ -25,24 +25,19 @@ class BooksApp extends React.Component {
   }
 
   onShelfChange(book, shelf) {
-    BooksAPI.update(book, shelf).then(books => {
-      this.setState((prevState) => ({
-        books : prevState.books.map(b => {
-          if (books.currentlyReading.includes(b.id))
-            return {...b, shelf: "currentlyReading"}
-          else if (books.wantToRead.includes(b.id))
-            return {...b, shelf: "wantToRead"}
-          else if (books.read.includes(b.id))
-            return {...b, shelf: "read"}
-          else
-            return {...b, shelf: 'none'};
-        })
+    BooksAPI.update(book, shelf).then(() => {
+      this.setState((state) => ({
+        books : state.books.filter(b => b.id !== book.id)
+                           .concat([{...book, shelf}])
       }))
     });
   }
 
   onSearchChange(e) {
     BooksAPI.search(e.target.value, 50).then(searchBooks => {
+
+      if (!searchBooks || searchBooks.error) return;
+
       this.setState((prevState) => ({
         searchBooks : searchBooks.map(b => {
           // When a book is on a bookshelf, it should have the same state
